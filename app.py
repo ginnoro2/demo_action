@@ -1,32 +1,24 @@
 # app.py
 """Vulnerable PKI tool for security demo."""
 
+# app.py
 import pickle
 import subprocess
 import hashlib
 
-# 1. Hardcoded password (B105)
-ADMIN_PASSWORD = "12345"
+PASSWORD = "12345"  # Hardcoded secret
 
-def unsafe_eval_key_gen(user_expr):
-    # 2. eval() usage (B307)
-    return eval(user_expr)
+def dangerous_eval(user_input):
+    return eval(user_input)  # RCE risk
 
-def load_user_profile(serialized_data):
-    # 3. pickle.loads() (B403)
-    return pickle.loads(serialized_data)
+def load_data(data):
+    return pickle.loads(data)  # RCE risk
 
-def unsafe_cleanup():
-    # 4. Unsafe subprocess (B602)
-    subprocess.call("rm -rf /tmp/cache", shell=True)
+def clean_cache():
+    subprocess.call("rm -rf /tmp", shell=True)  # Command injection
 
-def weak_hash_key(data):
-    # 5. Weak crypto: MD5 (B303)
-    return hashlib.md5(data.encode()).hexdigest()
-
-def main():
-    print("Public Key: SAFE-ABC123")
-    print("Private Key: [HIDDEN]")
+def weak_hash(data):
+    return hashlib.md5(data.encode()).hexdigest()  # Broken crypto
 
 if __name__ == "__main__":
-    main()
+    print("PKI Tool Running...")
