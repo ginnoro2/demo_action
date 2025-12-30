@@ -1,10 +1,17 @@
-name: Security Scan CI
+name: Security Scan + Release CI
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   ci-pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # Required to push to GHCR
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,3 +33,20 @@ jobs:
 
       - name: Run pytest (functional test)
         run: pytest
+
+      # ================================
+      # Build & Push to GitHub Container Registry (GHCR)
+      # ================================
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.Github_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/pki-app:latest
