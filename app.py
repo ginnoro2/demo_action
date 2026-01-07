@@ -1,7 +1,6 @@
-# app.py
 """
 Vulnerable PKI tool for security demo.
-Version 1.0.1 – Added secure hashing feature.
+Version 1.0.2 – Added certificate fingerprinting (secure) and new demo vulnerabilities.
 """
 
 import pickle
@@ -9,6 +8,8 @@ import subprocess
 import hashlib
 import hmac
 import os
+import tempfile
+from pathlib import Path
 
 PASSWORD = "12345"  # Hardcoded secret (intentional for demo)
 
@@ -37,10 +38,41 @@ def secure_hash(data, key=None):
         return hmac.new(key.encode(), data.encode(), hashlib.sha256).hexdigest()
     return hashlib.sha256(data.encode()).hexdigest()
 
+# NEW FEATURE (v1.0.2) – SECURE
+def cert_fingerprint(cert_pem: str):
+    """
+    Generate SHA-256 fingerprint of a PEM-formatted certificate (secure).
+    Simulated here for demo—real impl would parse cert.
+    """
+    # In real use: use cryptography.x509
+    clean_pem = "\n".join(line for line in cert_pem.splitlines() if not line.startswith("-----"))
+    return secure_hash(clean_pem)
+
+# NEW VULNERABILITY (v1.0.2) – PATH TRAVERSAL
+def save_user_cert(filename, content):
+    """
+    UNSAFE: Allows directory traversal (e.g., ../../etc/passwd).
+    For demo only!
+    """
+    # Vulnerable: no sanitization
+    with open(f"/certs/{filename}", "w") as f:
+        f.write(content)
+
+# NEW VULNERABILITY (v1.0.2) – INSECURE TEMP FILE
+def create_temp_token():
+    """
+    UNSAFE: Predictable temp file + race condition risk.
+    """
+    tmp_path = f"/tmp/token_{os.getpid()}.txt"  # Not using tempfile securely
+    with open(tmp_path, "w") as f:
+        f.write("temp-session-token")
+    return tmp_path
+
 def get_version():
-    return "v1.0.1"
+    return "v1.0.2"
 
 if __name__ == "__main__":
     print("PKI Tool Running...")
     print("Version:", get_version())
     print("Secure hash demo:", secure_hash("test-data"))
+    print("Cert fingerprint demo:", cert_fingerprint("-----BEGIN CERT-----\nabcd\n-----END CERT-----"))
