@@ -33,12 +33,13 @@ Please report responsibly.
 
 ---
 
-## Supported Versions
+## Example Supported Versions (only demo)
 
 | Version | Supported |
 |-------|----------|
-| v1.0.x | Yes |
-| < v1.0 | No |
+| v1.0.2 | Yes |
+| v1.0.1 | Yes |
+| v1.0.0 | No |
 
 ---
 
