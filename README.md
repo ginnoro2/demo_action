@@ -31,3 +31,14 @@ cd demo_action
 
 # Run the app
 python app.py
+
+```
+## Pull and Run from GHCR
+```bash
+# Pull the image
+docker pull ghcr.io/ginnoro2/demo_action/pki-app:latest
+
+# Run the container
+docker run ghcr.io/ginnoro2/demo_action/pki-app:latest
+```
+
