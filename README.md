@@ -45,6 +45,9 @@ By working with this repository, students will learn how to:
 git clone https://github.com/ginnoro2/demo_action.git
 cd demo_action
 
+# install dependencies
+pip install -r requirement.txt
+
 # Run the application
 python app.py
 ```
